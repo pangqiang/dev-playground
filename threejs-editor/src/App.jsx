@@ -1,6 +1,7 @@
-import Menu from './components/Menu';
-import Main from './components/Main';
-import Properties from './components/Properties';
+import Menu from './components/Menu/Menu';
+import Main from './components/Main/Main';
+import Properties from './components/Properties/Properties';
+import './App.scss'
 function App() {
   return (
     <>

@@ -1,0 +1,22 @@
+* {
+  margin: 0;
+  padding: 0
+}
+.wrap {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  .editor {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    background-color: aquamarine;
+    .main {
+      width: 1000px;
+      border-right: 1px solid #000;
+    }
+    .properties {
+      flex: 1;
+    }
+  }
+}
