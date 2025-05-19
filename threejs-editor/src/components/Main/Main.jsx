@@ -1,10 +1,13 @@
 
 import { useEffect } from "react"
 import { init } from "./init"
-function Main() { 
+import { useThreeStore } from "@/store"
+function Main() {
+  const { data, addMesh } = useThreeStore();
+
   useEffect(() => {
     const dom = document.getElementById('threejs-container')
-    const { scene } = init(dom);
+    const { scene } = init(dom, data);
     return () => {
       dom.innerHTML = '';
     }
