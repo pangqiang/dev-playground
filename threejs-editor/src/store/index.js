@@ -1,5 +1,6 @@
 import { create } from "zustand";
 
+// 立方体
 function createBox() {
   const newId = Math.random().toString().slice(2, 8);
   return {
@@ -22,43 +23,53 @@ function createBox() {
   }
 }
 
+// 圆柱体
+function createCylinder() {
+  const newId = Math.random().toString().slice(2, 8);
+  return {
+    id: newId,
+    type: 'Cylinder',
+    name: 'Cylinder' + newId,
+    props: {
+      radiusTop: 200,
+      radiusBottom: 200,
+      height: 300,
+      material: {
+        color: 'orange',
+      },
+      position: {
+        x: 0,
+        y: 0,
+        z: 0
+      }
+    }
+  }
+}
+
+
 const useThreeStore = create((set, get) => {
   return {
     data: {
-      meshArr: [
-        {
-          id: 1,
-          type: 'Box',
-          name: 'Box1',
-          props: {
-            width: 200,
-            height: 200,
-            depth: 200,
-            material: {
-              color: 'orange',
-            },
-            position: {
-              x: 0,
-              y: 0,
-              z: 0
-            }
-          }
-        }
-      ]
+      meshArr: []
     },
     addMesh(type) {
-      if (type === 'Box') {
+      function addItem(creator) {
         set(state => {
           return {
             data: {
               ...state.data,
               meshArr: [
                 ...state.data.meshArr,
-                createBox()
+                creator()
               ]
             }
           }
         })
+      }
+      if (type === 'Box') {
+        addItem(createBox);
+      } else if (type === 'Cylinder') {
+        addItem(createCylinder);
       }
     }
   }

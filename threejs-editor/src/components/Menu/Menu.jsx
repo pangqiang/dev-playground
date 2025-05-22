@@ -1,6 +1,9 @@
 import './Menu.scss'
 import { Menu as AntdMenu } from 'antd'
+import { useThreeStore } from '@/store'
 function Menu() {
+
+  const { addMesh } = useThreeStore();
 
   const items = [
     {
@@ -28,7 +31,7 @@ function Menu() {
   ];
 
   function handleClick(e) {
-    alert(e.key)
+    addMesh(e.key)
   }
   return (
     <div className='menu'>

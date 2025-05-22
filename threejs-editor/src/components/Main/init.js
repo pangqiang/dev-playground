@@ -2,7 +2,6 @@ import * as THREE from 'three';
 import {
     OrbitControls
 } from 'three/addons/controls/OrbitControls.js';
-import { MeshTypes } from '@/store'
 
 export function init(dom, data) {
     const scene = new THREE.Scene();
@@ -25,21 +24,6 @@ export function init(dom, data) {
 
     const gridHelper = new THREE.GridHelper(1000, 20);
     scene.add(gridHelper);
-
-    // render 
-    data.meshArr.forEach(item => {
-        if (item.type === MeshTypes.Box) {
-            const { width, height, depth, material: { color } } = item.props;
-            const geometry = new THREE.BoxGeometry(width, height, depth);
-            const material = new THREE.MeshPhongMaterial({
-                color
-            });
-            const mesh = new THREE.Mesh(geometry, material);
-            scene.add(mesh);
-        }
-    })
-
-
 
     const directionalLight = new THREE.DirectionalLight(0xffffff);
     directionalLight.position.set(500, 400, 300);
