@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import {
     OrbitControls
 } from 'three/addons/controls/OrbitControls.js';
+import { EffectComposer, GammaCorrectionShader, OutlinePass, RenderPass, ShaderPass, TransformControls } from 'three/examples/jsm/Addons.js';
 
 export function init(dom, data) {
     const scene = new THREE.Scene();
@@ -44,9 +45,41 @@ export function init(dom, data) {
     });
     renderer.setSize(width, height);
 
+    // 增加后期描边效果表示选中
+    const composer = new EffectComposer(renderer);
+
+    const renderPass = new RenderPass(scene, camera);
+    composer.addPass(renderPass);
+
+    const v = new THREE.Vector2(window.innerWidth, window.innerWidth);
+    const outlinePass = new OutlinePass(v, scene, camera);
+    outlinePass.pulsePeriod = 1;
+    composer.addPass(outlinePass);
+
+    // 点击选中物体
+    renderer.domElement.addEventListener('click', (e) => {
+        const y = -((e.offsetY / height) * 2 - 1);
+        const x = (e.offsetX / width) * 2 - 1;
+
+        const rayCaster = new THREE.Raycaster();
+        rayCaster.setFromCamera(new THREE.Vector2(x, y), camera);
+
+        const intersections = rayCaster.intersectObjects(scene.children);
+
+        if (intersections.length) {
+            const obj = intersections[0].object;
+            outlinePass.selectedObjects = [obj];
+        } else {
+            outlinePass.selectedObjects = [];
+        }
+
+    });
+
+
 
     function render(time) {
-        renderer.render(scene, camera);
+        composer.render();
+        // renderer.render(scene, camera);
         requestAnimationFrame(render);
     }
 
