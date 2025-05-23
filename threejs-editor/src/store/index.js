@@ -47,10 +47,14 @@ function createCylinder() {
 }
 
 
-const useThreeStore = create((set, get) => {
+const useThreeStore = create((set) => {
   return {
     data: {
       meshArr: []
+    },
+    selectedObj: null, // 记录选中的物体
+    setSelectedObj(obj) {
+      set({ selectedObj: obj })
     },
     addMesh(type) {
       function addItem(creator) {
@@ -71,6 +75,16 @@ const useThreeStore = create((set, get) => {
       } else if (type === 'Cylinder') {
         addItem(createCylinder);
       }
+    },
+    removeMesh(name) {
+      set(state => {
+        return {
+          data: {
+            ...state.data,
+            meshArr: state.data.meshArr.filter(item => item.name !== name)
+          }
+        }
+      })
     }
   }
 });
@@ -83,5 +97,5 @@ const MeshTypes = {
 
 export {
   useThreeStore,
-  MeshTypes
+  MeshTypes,
 }

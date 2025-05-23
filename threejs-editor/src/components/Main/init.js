@@ -4,7 +4,7 @@ import {
 } from 'three/addons/controls/OrbitControls.js';
 import { EffectComposer, GammaCorrectionShader, OutlinePass, RenderPass, ShaderPass, TransformControls } from 'three/examples/jsm/Addons.js';
 
-export function init(dom, data) {
+export function init(dom, data, onSelected) {
     const scene = new THREE.Scene();
 
     const axesHelper = new THREE.AxesHelper(500);
@@ -69,15 +69,18 @@ export function init(dom, data) {
         if (intersections.length) {
             const obj = intersections[0].object;
             outlinePass.selectedObjects = [obj];
+
+            // 记录选中的物体
+            onSelected(obj);
         } else {
             outlinePass.selectedObjects = [];
+            onSelected(null);
         }
-
     });
 
 
 
-    function render(time) {
+    function render() {
         composer.render();
         // renderer.render(scene, camera);
         requestAnimationFrame(render);

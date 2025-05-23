@@ -1,17 +1,22 @@
 
 import { useEffect, useRef } from "react"
-import { useThreeStore, MeshTypes } from "@/store"
+import { useThreeStore, MeshTypes, } from "@/store"
 import * as THREE from 'three';
 import { init } from './init'
 
 function Main() {
-  const { data } = useThreeStore();
+  const { data, setSelectedObj, selectedObj, removeMesh } = useThreeStore();
 
   const sceneRef = useRef();
 
+
+  function onSelected(obj) {
+    setSelectedObj(obj)
+  }
+
   useEffect(() => {
     const dom = document.getElementById('threejs-container');
-    const { scene } = init(dom, data);
+    const { scene } = init(dom, data, onSelected);
     sceneRef.current = scene
     return () => {
       dom.innerHTML = '';
@@ -54,6 +59,20 @@ function Main() {
       }
     })
   }, [data]);
+
+  useEffect(() => {
+    function handleKeydown(e) {
+      if (e.key === 'Backspace') {
+        sceneRef.current.remove(selectedObj);
+        removeMesh(selectedObj.name);
+      }
+    }
+    window.addEventListener('keydown', handleKeydown);
+    return () => {
+      window.removeEventListener('keydown', handleKeydown);
+    }
+  }, [selectedObj]);
+
 
 
   return (
