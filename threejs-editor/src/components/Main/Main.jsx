@@ -5,7 +5,13 @@ import * as THREE from 'three';
 import { init } from './init'
 
 function Main() {
-  const { data, setSelectedObj, selectedObj, removeMesh } = useThreeStore();
+  const {
+    data,
+    setSelectedObj,
+    selectedObj,
+    removeMesh,
+    updateMeshPosition
+  } = useThreeStore();
 
   const sceneRef = useRef();
 
@@ -16,7 +22,7 @@ function Main() {
 
   useEffect(() => {
     const dom = document.getElementById('threejs-container');
-    const { scene } = init(dom, data, onSelected);
+    const { scene } = init(dom, data, onSelected, updateMeshPosition);
     sceneRef.current = scene
     return () => {
       dom.innerHTML = '';

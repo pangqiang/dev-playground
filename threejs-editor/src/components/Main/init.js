@@ -4,7 +4,7 @@ import {
 } from 'three/addons/controls/OrbitControls.js';
 import { EffectComposer, GammaCorrectionShader, OutlinePass, RenderPass, ShaderPass, TransformControls } from 'three/examples/jsm/Addons.js';
 
-export function init(dom, data, onSelected) {
+export function init(dom, data, onSelected, updateMeshPosition) {
     const scene = new THREE.Scene();
 
     const axesHelper = new THREE.AxesHelper(500);
@@ -56,6 +56,21 @@ export function init(dom, data, onSelected) {
     outlinePass.pulsePeriod = 1;
     composer.addPass(outlinePass);
 
+    // TransformControls 对物体做移动、旋转、缩放：
+    const transformControls = new TransformControls(camera, renderer.domElement);
+    const transformHelper = transformControls.getHelper();
+    scene.add(transformHelper);
+
+    transformControls.addEventListener('change', () => {
+        // 变换控件发生变化时触发
+        const obj = transformControls.object;
+        if (obj) {
+            // 更新选中物体的属性
+            updateMeshPosition(obj.name, obj.position)
+        }
+    });
+
+
     // 点击选中物体
     renderer.domElement.addEventListener('click', (e) => {
         const y = -((e.offsetY / height) * 2 - 1);
@@ -64,7 +79,13 @@ export function init(dom, data, onSelected) {
         const rayCaster = new THREE.Raycaster();
         rayCaster.setFromCamera(new THREE.Vector2(x, y), camera);
 
-        const intersections = rayCaster.intersectObjects(scene.children);
+        // 找到场景中的有效物体
+        const objs = scene.children.filter(item => {
+            return item.name.startsWith('Box') || item.name.startsWith('Cylinder')
+        })
+        const intersections = rayCaster.intersectObjects(objs);
+
+        // const intersections = rayCaster.intersectObjects(scene.children);
 
         if (intersections.length) {
             const obj = intersections[0].object;
@@ -72,17 +93,25 @@ export function init(dom, data, onSelected) {
 
             // 记录选中的物体
             onSelected(obj);
+
+            // attach 方法将控件绑定到特定对象——在本例中，即 obj 引用的对象。
+            transformControls.attach(obj);
+
         } else {
             outlinePass.selectedObjects = [];
             onSelected(null);
+
+            // 如果没有选中物体，则解除绑定
+            transformControls.detach();
         }
     });
 
 
 
-    function render() {
+    function render(time) {
         composer.render();
         // renderer.render(scene, camera);
+        transformControls.update(time);
         requestAnimationFrame(render);
     }
 
@@ -100,7 +129,7 @@ export function init(dom, data, onSelected) {
         camera.updateProjectionMatrix();
     };
 
-    const controls = new OrbitControls(camera, renderer.domElement);
+    // const controls = new OrbitControls(camera, renderer.domElement);
 
     return {
         scene

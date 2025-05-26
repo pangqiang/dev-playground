@@ -76,6 +76,21 @@ const useThreeStore = create((set) => {
         addItem(createCylinder);
       }
     },
+    updateMeshPosition(name, position) {
+      set(state => {
+        return {
+          data: {
+            ...state.data,
+            meshArr: state.data.meshArr.map(mesh => {
+              if (mesh.name === name) {
+                mesh.props.position = position;
+              }
+              return mesh;
+            })
+          }
+        }
+      })
+    },
     removeMesh(name) {
       set(state => {
         return {
