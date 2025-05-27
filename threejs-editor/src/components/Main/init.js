@@ -56,6 +56,11 @@ export function init(dom, data, onSelected, updateMeshPosition) {
     outlinePass.pulsePeriod = 1;
     composer.addPass(outlinePass);
 
+
+    // OrbitControls 用于控制相机的旋转、缩放和平移：
+    const orbitControls = new OrbitControls(camera, renderer.domElement);
+
+
     // TransformControls 对物体做移动、旋转、缩放：
     const transformControls = new TransformControls(camera, renderer.domElement);
     const transformHelper = transformControls.getHelper();
@@ -70,6 +75,11 @@ export function init(dom, data, onSelected, updateMeshPosition) {
         }
     });
 
+    transformControls.addEventListener('dragging-changed', (e) => {
+        // 当拖拽控件被激活时，禁用 OrbitControls
+        orbitControls.enabled = !e.value;
+
+    });
 
     // 点击选中物体
     renderer.domElement.addEventListener('click', (e) => {
@@ -129,7 +139,6 @@ export function init(dom, data, onSelected, updateMeshPosition) {
         camera.updateProjectionMatrix();
     };
 
-    // const controls = new OrbitControls(camera, renderer.domElement);
 
     return {
         scene
