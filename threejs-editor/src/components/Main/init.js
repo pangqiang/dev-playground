@@ -2,9 +2,16 @@ import * as THREE from 'three';
 import {
     OrbitControls
 } from 'three/addons/controls/OrbitControls.js';
-import { EffectComposer, GammaCorrectionShader, OutlinePass, RenderPass, ShaderPass, TransformControls } from 'three/examples/jsm/Addons.js';
+import {
+    EffectComposer,
+    GammaCorrectionShader,
+    OutlinePass,
+    RenderPass,
+    ShaderPass,
+    TransformControls
+} from 'three/examples/jsm/Addons.js';
 
-export function init(dom, data, onSelected, updateMeshPosition) {
+export function init(dom, data, onSelected, updateMeshInfo) {
     const scene = new THREE.Scene();
 
     const axesHelper = new THREE.AxesHelper(500);
@@ -71,7 +78,14 @@ export function init(dom, data, onSelected, updateMeshPosition) {
         const obj = transformControls.object;
         if (obj) {
             // 更新选中物体的属性
-            updateMeshPosition(obj.name, obj.position)
+            // updateMeshPosition(obj.name, obj.position)
+            if (transformControls.mode === 'translate') {
+                updateMeshInfo(obj.name, obj.position, 'position');
+            } else if (transformControls.mode === 'scale') {
+                updateMeshInfo(obj.name, obj.scale, 'scale');
+            } else if (transformControls.mode === 'rotate') {
+                updateMeshInfo(obj.name, obj.rotation, 'rotation');
+            }
         }
     });
 
@@ -117,6 +131,12 @@ export function init(dom, data, onSelected, updateMeshPosition) {
     });
 
 
+    function setTransformControlsMode(mode) {
+        // 设置变换控件的模式
+        transformControls.setMode(mode);
+    }
+
+
 
     function render(time) {
         composer.render();
@@ -141,6 +161,7 @@ export function init(dom, data, onSelected, updateMeshPosition) {
 
 
     return {
-        scene
+        scene,
+        setTransformControlsMode
     }
 }

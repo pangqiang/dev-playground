@@ -1,3 +1,4 @@
+import { RotateLeftOutlined } from "@ant-design/icons";
 import { create } from "zustand";
 
 // 立方体
@@ -15,6 +16,16 @@ function createBox() {
         color: 'orange',
       },
       position: {
+        x: 0,
+        y: 0,
+        z: 0
+      },
+      scale: {
+        x: 1,
+        y: 1,
+        z: 1
+      },
+      rotation: {
         x: 0,
         y: 0,
         z: 0
@@ -38,6 +49,16 @@ function createCylinder() {
         color: 'orange',
       },
       position: {
+        x: 0,
+        y: 0,
+        z: 0
+      },
+      scale: {
+        x: 1,
+        y: 1,
+        z: 1
+      },
+      rotation: {
         x: 0,
         y: 0,
         z: 0
@@ -76,14 +97,24 @@ const useThreeStore = create((set) => {
         addItem(createCylinder);
       }
     },
-    updateMeshPosition(name, position) {
+    updateMeshInfo(name, info, type) {
       set(state => {
         return {
           data: {
             ...state.data,
             meshArr: state.data.meshArr.map(mesh => {
               if (mesh.name === name) {
-                mesh.props.position = position;
+                if (type === 'position') {
+                  mesh.props.position = info;
+                } else if (type === 'scale') {
+                  mesh.props.scale = info;
+                } else if (type === 'rotation') {
+                  mesh.props.rotation = {
+                    x: info.x,
+                    y: info.y,
+                    z: info.z
+                  }
+                }
               }
               return mesh;
             })

@@ -4,16 +4,22 @@ import { useThreeStore, MeshTypes, } from "@/store"
 import * as THREE from 'three';
 import { init } from './init'
 
+import { FloatButton } from "antd";
+import { ArrowsAltOutlined, DragOutlined, RetweetOutlined } from "@ant-design/icons";
+
+
 function Main() {
   const {
     data,
     setSelectedObj,
     selectedObj,
     removeMesh,
-    updateMeshPosition
+    updateMeshInfo
   } = useThreeStore();
 
   const sceneRef = useRef();
+
+  const transformControlsModeRef = useRef();
 
 
   function onSelected(obj) {
@@ -22,8 +28,10 @@ function Main() {
 
   useEffect(() => {
     const dom = document.getElementById('threejs-container');
-    const { scene } = init(dom, data, onSelected, updateMeshPosition);
+    const { scene, setTransformControlsMode }
+      = init(dom, data, onSelected, updateMeshInfo);
     sceneRef.current = scene
+    transformControlsModeRef.current = setTransformControlsMode;
     return () => {
       dom.innerHTML = '';
     }
@@ -34,7 +42,13 @@ function Main() {
 
     data.meshArr.forEach(item => {
       if (item.type === MeshTypes.Box) {
-        const { width, height, depth, material: { color }, position } = item.props;
+        const { width,
+          height, depth,
+          material: { color },
+          position,
+          scale,
+          rotation
+        } = item.props;
         let mesh = scene.getObjectByName(item.name);
 
         if (!mesh) {
@@ -47,6 +61,11 @@ function Main() {
 
         mesh.name = item.name;
         mesh.position.copy(position)
+        mesh.scale.copy(scale)
+        mesh.rotation.x = rotation.x;
+        mesh.rotation.y = rotation.y;
+        mesh.rotation.z = rotation.z;
+
         scene.add(mesh);
       } else if (item.type === MeshTypes.Cylinder) {
         const { radiusTop, radiusBottom, height, material: { color }, position } = item.props;
@@ -79,11 +98,24 @@ function Main() {
     }
   }, [selectedObj]);
 
+  function setMode(mode) {
+    transformControlsModeRef.current(mode);
+  };
 
 
   return (
-    <div className='main' id="threejs-container">
+    <div className="main">
+      <div id="threejs-container">
+      </div>
+      <FloatButton.Group className="btn-group">
+        <FloatButton icon={<DragOutlined />} onClick={() => setMode('translate')} />
+        <FloatButton icon={<RetweetOutlined />} onClick={() => setMode('rotate')} />
+        <FloatButton icon={<ArrowsAltOutlined />} onClick={() => setMode('scale')} />
+      </FloatButton.Group>
     </div>
+
+
+
   )
 }
 export default Main
