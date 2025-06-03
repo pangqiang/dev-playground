@@ -11,7 +11,9 @@ import { ArrowsAltOutlined, DragOutlined, RetweetOutlined } from "@ant-design/ic
 function Main() {
   const {
     data,
+    setScene,
     setSelectedObj,
+    selectedObjName,
     selectedObj,
     removeMesh,
     updateMeshInfo
@@ -20,6 +22,7 @@ function Main() {
   const sceneRef = useRef();
 
   const transformControlsModeRef = useRef();
+  const transformControlsAttachObjRef = useRef();
 
 
   function onSelected(obj) {
@@ -28,10 +31,19 @@ function Main() {
 
   useEffect(() => {
     const dom = document.getElementById('threejs-container');
-    const { scene, setTransformControlsMode }
+    const {
+      scene,
+      setTransformControlsMode,
+      transformControlsAttachObj
+
+    }
       = init(dom, data, onSelected, updateMeshInfo);
     sceneRef.current = scene
     transformControlsModeRef.current = setTransformControlsMode;
+    transformControlsAttachObjRef.current = transformControlsAttachObj;
+
+    setScene(scene);
+    // 清理函数，组件卸载时调用
     return () => {
       dom.innerHTML = '';
     }
@@ -83,7 +95,18 @@ function Main() {
         scene.add(mesh);
       }
     })
+
+    // react 会浅层对比 scene 有没有变化，这里 clone 一下来触发更新
+    setScene(scene.clone()); // 更新场景引用
   }, [data]);
+
+  useEffect(() => {
+    if (selectedObjName) {
+      const obj = sceneRef.current.getObjectByName(selectedObjName);
+      setSelectedObj(obj);
+      transformControlsAttachObjRef.current(obj);
+    }
+  }, [selectedObjName])
 
   useEffect(() => {
     function handleKeydown(e) {

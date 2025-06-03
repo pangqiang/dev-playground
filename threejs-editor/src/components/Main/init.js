@@ -136,6 +136,9 @@ export function init(dom, data, onSelected, updateMeshInfo) {
         transformControls.setMode(mode);
     }
 
+    function transformControlsAttachObj(obj) {
+        transformControls.attach(obj);
+    }
 
 
     function render(time) {
@@ -162,6 +165,7 @@ export function init(dom, data, onSelected, updateMeshInfo) {
 
     return {
         scene,
-        setTransformControlsMode
+        setTransformControlsMode,
+        transformControlsAttachObj
     }
 }

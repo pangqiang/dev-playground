@@ -1,4 +1,5 @@
 import { RotateLeftOutlined } from "@ant-design/icons";
+import { Scene } from "three";
 import { create } from "zustand";
 
 // 立方体
@@ -73,9 +74,17 @@ const useThreeStore = create((set) => {
     data: {
       meshArr: []
     },
+    scene: null, // 记录场景
+    setScene(scene) {
+      set({ scene: scene })
+    },
     selectedObj: null, // 记录选中的物体
     setSelectedObj(obj) {
       set({ selectedObj: obj })
+    },
+    selectedObjName: null, // 记录选中物体的名称
+    setSelectedObjName(name) {
+      set({ selectedObjName: name })
     },
     addMesh(type) {
       function addItem(creator) {
