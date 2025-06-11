@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useThreeStore } from "../../store";
+import Info from "./info";
 import { Tree } from "antd";
 
 function Properties() {
@@ -46,8 +47,9 @@ function Properties() {
       {selectedObj?.name}
     </div>
     <pre>
-      {JSON.stringify(data, null, 2)}
+      {/* {JSON.stringify(data, null, 2)} */}
     </pre>
+    <Info />
   </div>
 }
 

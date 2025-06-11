@@ -106,6 +106,24 @@ const useThreeStore = create((set) => {
         addItem(createCylinder);
       }
     },
+    updateMaterial(name, info) {
+      set(state => {
+        return {
+          data: {
+            ...state.data,
+            meshArr: state.data.meshArr.map(mesh => {
+              if (mesh.name === name) {
+                mesh.props.material = {
+                  ...mesh.props.material,
+                  ...info
+                }
+              }
+              return mesh;
+            })
+          }
+        }
+      })
+    },
     updateMeshInfo(name, info, type) {
       set(state => {
         return {

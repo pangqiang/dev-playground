@@ -77,6 +77,8 @@ function Main() {
         mesh.rotation.x = rotation.x;
         mesh.rotation.y = rotation.y;
         mesh.rotation.z = rotation.z;
+        // 更新材质颜色
+        mesh.material.color = new THREE.Color(color);
 
         scene.add(mesh);
       } else if (item.type === MeshTypes.Cylinder) {
@@ -92,6 +94,8 @@ function Main() {
         }
         mesh.name = item.name;
         mesh.position.copy(position)
+        mesh.material.color = new THREE.Color(color);
+
         scene.add(mesh);
       }
     })
