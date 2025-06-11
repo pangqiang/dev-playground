@@ -111,6 +111,7 @@ function Main() {
   useEffect(() => {
     function handleKeydown(e) {
       if (e.key === 'Backspace') {
+        transformControlsAttachObjRef.current(null); // 解除绑定
         sceneRef.current.remove(selectedObj);
         removeMesh(selectedObj.name);
       }

@@ -31,7 +31,6 @@ function Properties() {
 
 
   function handleSelect(selectKeys, info) {
-    debugger
     const name = info.node.name;
 
     setSelectedObjName(name);

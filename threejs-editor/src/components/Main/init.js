@@ -137,6 +137,11 @@ export function init(dom, data, onSelected, updateMeshInfo) {
     }
 
     function transformControlsAttachObj(obj) {
+        if (!obj) {
+            // 如果没有传入物体，则解除绑定
+            transformControls.detach();
+            return;
+        }
         transformControls.attach(obj);
     }
 
