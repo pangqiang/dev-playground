@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useThreeStore } from "../../store";
 import Info from "./info";
-import { Tree } from "antd";
+import { Tree, Segmented } from "antd";
 
 function Properties() {
   const { data, selectedObj, scene, setSelectedObjName } = useThreeStore();
@@ -37,19 +37,27 @@ function Properties() {
     setSelectedObjName(name);
   }
 
+  const [key, setKey] = useState('属性');
+
   return <div className="Properties">
-    <Tree
-      treeData={treeData}
-      expandedKeys={['root']}
-      onSelect={handleSelect}
-    />
-    <div>
-      {selectedObj?.name}
-    </div>
-    <pre>
-      {/* {JSON.stringify(data, null, 2)} */}
-    </pre>
-    <Info />
+    <Segmented
+      value={key}
+      options={['属性', 'json']}
+      block
+      onChange={setKey}>
+
+    </Segmented>
+    {
+      key === '属性' ? <div>
+        <Tree treeData={treeData} expandedKeys={['root']} onSelect={handleSelect} />
+        <Info />
+      </div> : null
+    }
+    {key === 'json' ?
+      <pre>
+        {JSON.stringify(data, null, 2)}
+      </pre> : null
+    }
   </div>
 }
 

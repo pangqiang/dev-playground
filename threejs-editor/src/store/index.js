@@ -1,5 +1,4 @@
-import { RotateLeftOutlined } from "@ant-design/icons";
-import { Scene } from "three";
+import { persist } from "zustand/middleware";
 import { create } from "zustand";
 
 // 立方体
@@ -69,7 +68,7 @@ function createCylinder() {
 }
 
 
-const useThreeStore = create((set) => {
+const useThreeStore = create(persist((set) => {
   return {
     data: {
       meshArr: []
@@ -160,7 +159,9 @@ const useThreeStore = create((set) => {
       })
     }
   }
-});
+}, {
+  name: 'three-editor-store', // 持久化的存储名称
+}));
 
 // 组件类型
 const MeshTypes = {
